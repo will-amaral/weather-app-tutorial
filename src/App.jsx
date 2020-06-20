@@ -12,7 +12,7 @@ function App() {
   async function fetchLocation(address) {
     try {
       const { data } = await gapi.get('/geocode/json', {
-        params: { address, key: 'AIzaSyD6rKc6URJVJv5GNgNydJxd19jitau6pg0' },
+        params: { address, key: '' },
       });
       const { results } = data;
       const { lat, lng: lon } = results[0].geometry.location;

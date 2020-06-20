@@ -42,7 +42,7 @@ function Forecast(props) {
       lat,
       lon,
       exclude: 'minutely,daily',
-      appid: '980e6f231a670d3038538f9bfb1cc794',
+      appid: '',
       units: 'metric',
     };
 
