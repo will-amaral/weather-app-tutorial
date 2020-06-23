@@ -5,13 +5,11 @@ import { StyledTableInner, StyledTableContainer } from './styles';
 import TableRow from './TableRow';
 
 function Table(props) {
-  const { data } = props;
+  const { data, weatherMessage } = props;
 
   return (
     <StyledTableContainer>
-      <h1 style={{ fontSize: '1em' }}>
-        Sunny currently in São Paulo. The temperature is 20 ºC
-      </h1>
+      <h1 style={{ fontSize: '1em' }}>{weatherMessage}</h1>
       <StyledTableInner>
         <table>
           <tbody>

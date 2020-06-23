@@ -9,7 +9,7 @@ import {
 import { StyledInput, StyledButton, StyledForm, StyledInputContainer } from './styles';
 
 function Input(props) {
-  const { fetchLocation, setCoordinates } = props;
+  const { fetchLocation, setCoordinates, setLocation, setMessage } = props;
   const [value, setValue] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -22,14 +22,16 @@ function Input(props) {
   function handleLocation() {
     setLoading(true);
 
-    const success = ({ coords }) => {
-      const { latitude, longitude } = coords;
+    const success = (obj) => {
+      const { latitude, longitude } = obj.coords;
       setCoordinates({ lat: latitude, lon: longitude });
+      setLocation('your location');
       setLoading(false);
     };
 
     const error = (err) => {
       console.log(err);
+      setMessage(`${err.message}. Please, allow in your browser.`);
       setLoading(false);
     };
 

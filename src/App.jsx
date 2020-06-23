@@ -8,13 +8,16 @@ import { gapi } from './utils/api';
 function App() {
   const [selected, setSelected] = useState('forecast');
   const [coordinates, setCoordinates] = useState();
+  const [location, setLocation] = useState();
 
   async function fetchLocation(address) {
     try {
       const { data } = await gapi.get('/geocode/json', {
-        params: { address, key: '' },
+        params: { address, key: 'AIzaSyD6rKc6URJVJv5GNgNydJxd19jitau6pg0' },
       });
       const { results } = data;
+      console.log(results);
+      setLocation(results[0].formatted_address);
       const { lat, lng: lon } = results[0].geometry.location;
       setCoordinates({ lat, lon });
     } catch (error) {
@@ -32,6 +35,8 @@ function App() {
             fetchLocation={fetchLocation}
             setCoordinates={setCoordinates}
             coordinates={coordinates}
+            location={location}
+            setLocation={setLocation}
           />
         )}
         {selected === 'about' && <About />}

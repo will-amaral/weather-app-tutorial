@@ -2,35 +2,37 @@ import React, { useState, useEffect } from 'react';
 
 import { Input, Table } from '../components/Forecast';
 import { owapi } from '../utils/api';
+import { formatDate, formatCondition } from '../utils/helpers';
 
 function Forecast(props) {
-  const { fetchLocation, setCoordinates, coordinates } = props;
+  const { fetchLocation, setCoordinates, coordinates, location, setLocation } = props;
   const [data, setData] = useState();
+  const [currentTemp, setCurrentTemp] = useState();
+  const [currentMain, setCurrentMain] = useState();
   const [message, setMessage] = useState('Get started');
   const [loading, setLoading] = useState(false);
 
-  console.log(data);
-
   function formatWeatherInfo(weather) {
+    const now = weather.current;
+    setCurrentTemp(now.temp + 'ºC');
+    setCurrentMain(now.weather[0].main);
     const obj = {
-      time: [],
-      condition: [],
-      temp: [],
-      feelsLike: [],
-      humidity: [],
+      time: ['Now'],
+      condition: [formatCondition(now.weather[0].main, now.weather[0].icon)],
+      temp: [now.temp + 'º C'],
+      feelsLike: [now.feels_like + 'ºC'],
+      humidity: [now.humidity + '%'],
     };
 
-    weather.hourly.slice(0, 6).forEach((item) => {
+    weather.hourly.slice(1, 6).forEach((item) => {
       const { dt, weather, temp, feels_like: feelsLike, humidity } = item;
       const { main, icon } = weather[0];
 
-      obj.time.push(dt);
-      obj.condition.push(
-        <img alt={main} src={`http://openweathermap.org/img/wn/${icon}@2x.png`} />
-      );
-      obj.temp.push(temp);
-      obj.feelsLike.push(feelsLike);
-      obj.humidity.push(humidity);
+      obj.time.push(formatDate(dt));
+      obj.condition.push(formatCondition(main, icon));
+      obj.temp.push(temp + 'ºC');
+      obj.feelsLike.push(feelsLike + 'ºC');
+      obj.humidity.push(humidity + '%');
     });
 
     return obj;
@@ -42,7 +44,7 @@ function Forecast(props) {
       lat,
       lon,
       exclude: 'minutely,daily',
-      appid: '',
+      appid: '980e6f231a670d3038538f9bfb1cc794',
       units: 'metric',
     };
 
@@ -56,21 +58,29 @@ function Forecast(props) {
   }
 
   useEffect(() => {
-    fetchWeather(coordinates, formatWeatherInfo);
+    if (coordinates) {
+      fetchWeather(coordinates, formatWeatherInfo);
+    }
   }, [coordinates]);
 
   return (
     <>
-      <Input fetchLocation={fetchLocation} setCoordinates={setCoordinates} />
+      <Input
+        fetchLocation={fetchLocation}
+        setCoordinates={setCoordinates}
+        setLocation={setLocation}
+        setMessage={setMessage}
+      />
       {!data && <h3>{message}</h3>}
       {loading && <div>loading...</div>}
-      {data && <Table data={data} />}
+      {data && (
+        <Table
+          data={data}
+          weatherMessage={`${currentMain} currently in ${location}. The temperature is ${currentTemp}`}
+        />
+      )}
     </>
   );
 }
-
-Forecast.defaultProps = {
-  coordinates: { lat: -23.223, lon: -45.917 },
-};
 
 export default Forecast;

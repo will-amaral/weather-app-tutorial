@@ -62,6 +62,6 @@ export const StyledTableInner = styled.div`
 export const StyledTableContainer = styled.div`
   font-size: 1.5em;
   text-align: center;
-  width: 65vw;
+  width: 70vw;
   margin-bottom: 10vh;
 `;
